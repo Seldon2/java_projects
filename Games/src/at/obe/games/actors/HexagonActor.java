@@ -1,9 +1,12 @@
 package at.obe.games.actors;
 
+import at.obe.games.observer.Observer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class HexagonActor implements Actor{
@@ -11,9 +14,8 @@ public class HexagonActor implements Actor{
     private float x, y, speedX, speedY, speedFactor;
     private Random random = new Random();
 
-    public HexagonActor(float x, float y, float size){
-        this(x, y, size, 1.0f);
-    }
+    private List<Observer> observers = new ArrayList<>();
+
     public HexagonActor(float x, float y, float size, float speedFactor){
         this.hexagon = createHexagon(x, y, size);
         this.x = x;
@@ -22,6 +24,10 @@ public class HexagonActor implements Actor{
         float angle = random.nextFloat() * 360;
         speedX = (float) Math.cos(Math.toRadians(angle)) * this.speedFactor;
         speedY = (float) Math.sin(Math.toRadians(angle)) * this.speedFactor;
+    }
+
+    public void addObserver(Observer observer){
+        this.observers.add(observer);
     }
 
     private Polygon createHexagon(float x, float y, float size){
@@ -48,6 +54,7 @@ public class HexagonActor implements Actor{
         this.y += speedY;
 
         if (x < 0 || x > gc.getWidth() || y < 0 || y > gc.getHeight()) {
+            notifyObservers();
 
             float angle = random.nextFloat() * 360;
 
@@ -66,5 +73,11 @@ public class HexagonActor implements Actor{
     @Override
     public void render(GameContainer gc, Graphics graphics) {
         graphics.draw(hexagon);
+    }
+
+    private void notifyObservers(){
+        for(Observer observer : this.observers){
+            observer.inform();
+        }
     }
 }

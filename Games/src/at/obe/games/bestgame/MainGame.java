@@ -1,11 +1,13 @@
 package at.obe.games.bestgame;
 
 import at.obe.games.actors.*;
+import at.obe.games.observer.Observer;
 import org.newdawn.slick.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import at.obe.games.strategy.*;
 
 public class MainGame extends BasicGame {
     private List<Actor> actors;
@@ -17,11 +19,25 @@ public class MainGame extends BasicGame {
     @Override
     public void init(GameContainer gc) throws SlickException {
         this.actors = new ArrayList<>();
-        MoveStrategy m1 = new MoveRandom(100, 100, 0.5f);
-        this.actors.add(new CircleActor(100, 100, 50, 0.5f));
-        this.actors.add(new RectActor(100, 200, 50, 100, m1));
-        this.actors.add(new OvalActor(100, 300, 100, 50, 1.2f));
-        this.actors.add(new HexagonActor(300, 400, 20, 0.8f));
+
+        MoveStrategy m1 = new MoveRandom(100, 100, 1.2f);
+        MoveStrategy m2 = new MoveRight(100, 200, 0.1f);
+        MoveStrategy m3 = new MoveLeft(600, 400, 0.1f);
+        MoveStrategy m4 = new MoveDown(500, 0, 0.1f);
+
+        CircleActor circle = new CircleActor(50, m2);
+        RectActor rect = new RectActor(100, 200, m3);
+        HexagonActor hex = new HexagonActor(300, 400, 20, 0.5f);
+        OvalActor oval = new OvalActor(150, 80, m4);
+
+        hex.addObserver(circle);
+        hex.addObserver(rect);
+
+        this.actors.add(circle);
+        this.actors.add(rect);
+        this.actors.add(oval);
+        this.actors.add(hex);
+
     }
 
     @Override

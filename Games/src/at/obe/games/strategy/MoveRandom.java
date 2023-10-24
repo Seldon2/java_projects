@@ -1,4 +1,4 @@
-package at.obe.games.bestgame;
+package at.obe.games.strategy;
 
 import org.newdawn.slick.GameContainer;
 
@@ -9,16 +9,13 @@ public class MoveRandom implements MoveStrategy {
     private Random random = new Random();
 
     public MoveRandom(float x, float y, float speedFactor){
+        super();
         this.x = x;
         this.y = y;
         this.speedFactor = speedFactor;
-
-    }
-
-    private void initializeRandomMovement() {
         float angle = random.nextFloat() * 360;
-        this.speedX = (float) Math.cos(Math.toRadians(angle)) * this.speedFactor;
-        this.speedY = (float) Math.sin(Math.toRadians(angle)) * this.speedFactor;
+        speedX = (float) Math.cos(Math.toRadians(angle)) * this.speedFactor;
+        speedY = (float) Math.sin(Math.toRadians(angle)) * this.speedFactor;
     }
 
     @Override
@@ -27,7 +24,20 @@ public class MoveRandom implements MoveStrategy {
         this.y += speedY;
 
         if (this.x < 0 || this.x > gc.getWidth() || this.y < 0 || this.y > gc.getHeight()) {
-            initializeRandomMovement();
+            float angle = random.nextFloat() * 360;
+
+            speedX = (float) Math.cos(Math.toRadians(angle)) * this.speedFactor;
+            speedY = (float) Math.sin(Math.toRadians(angle)) * this.speedFactor;
         }
     }
+    @Override
+    public float getX() {
+        return this.x;
+    }
+
+    @Override
+    public float getY() {
+        return this.y;
+    }
+
 }

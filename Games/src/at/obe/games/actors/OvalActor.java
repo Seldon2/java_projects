@@ -2,45 +2,26 @@ package at.obe.games.actors;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-
-import java.util.Random;
+import at.obe.games.strategy.MoveStrategy;
 
 public class OvalActor implements Actor {
-    private float x, y, height, width, speedX, speedY, speedFactor;
+    private float height, width;
 
-    private Random random = new Random();
+    private MoveStrategy moveStrategy;
 
-    public OvalActor(float x, float y, float height, float width){
-        this(x, y, height, width, 1.0f);
-    }
-
-    public OvalActor(float x, float y, float height, float width, float speedFactor){
-        this.x = x;
-        this.y = y;
+    public OvalActor(float height, float width, MoveStrategy moveStrategy) {
         this.height = height;
         this.width = width;
-        this.speedFactor = speedFactor;
-        float angle = random.nextFloat() * 360;
-        speedX = (float) Math.cos(Math.toRadians(angle)) * this.speedFactor;
-        speedY = (float) Math.sin(Math.toRadians(angle)) * this.speedFactor;
+        this.moveStrategy = moveStrategy;
     }
 
     @Override
     public void update(GameContainer gc, int delta) {
-        this.x += speedX;
-        this.y += speedY;
-
-        if (x < 0 || x > gc.getWidth() || y < 0 || y > gc.getHeight()) {
-
-            float angle = random.nextFloat() * 360;
-
-            speedX = (float) Math.cos(Math.toRadians(angle)) * this.speedFactor;
-            speedY = (float) Math.sin(Math.toRadians(angle)) * this.speedFactor;
-        }
+        this.moveStrategy.update(gc, delta);
     }
 
     @Override
     public void render(GameContainer gc, Graphics graphics) {
-        graphics.drawOval(this.x, this.y, this.width, this.height);
+        graphics.drawOval(this.moveStrategy.getX(), this.moveStrategy.getY(), this.width, this.height);
     }
 }
